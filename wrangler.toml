@@ -1,7 +1,7 @@
 name = "worker-weathered-dew-2370"
-main = "src/index.ts"
+main = "src/index.js"
 compatibility_date = "2023-11-07"
-usage_model = "standard"
+usage_model = "bundled"
 env = { }
 
 [triggers]
