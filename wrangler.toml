@@ -1,13 +1,16 @@
 name = "worker-weathered-dew-2370"
 main = "src/worker.js"
 compatibility_date = "2023-11-07"
-usage_model = "bundled"
 env = { }
-kv_namespaces = [
-  { binding = "authgate", id = "c1a6143045314104aecc649f28900d4a" }
-]
 
 
 [triggers]
 crons = [ ]
 
+[[migrations]]
+tag = "v1"
+new_classes = ["Fetcher"]
+
+[[durable_objects.bindings]]
+name = "authgate"
+class_name = "Fetcher"
