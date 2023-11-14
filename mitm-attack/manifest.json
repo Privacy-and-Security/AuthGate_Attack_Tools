@@ -1,0 +1,15 @@
+{
+    "manifest_version": 3,
+    "name": "API Monitor",
+    "version": "1.0",
+    "permissions": [
+      "webRequest"
+    ],
+    "host_permissions": [
+      "https://api.authgate.work/*",
+      "<all_urls>"
+    ],
+    "background": {
+      "service_worker": "background.js"
+    }
+  }

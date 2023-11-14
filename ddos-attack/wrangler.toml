@@ -1,0 +1,16 @@
+name = "worker-weathered-dew-2370"
+main = "src/worker.js"
+compatibility_date = "2023-11-07"
+env = { }
+
+
+[triggers]
+crons = [ ]
+
+[[migrations]]
+tag = "v1"
+new_classes = ["Fetcher"]
+
+[[durable_objects.bindings]]
+name = "authgate"
+class_name = "Fetcher"
