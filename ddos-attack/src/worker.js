@@ -69,6 +69,6 @@ export class Fetcher {
 
   async fetch(request) {
     // return new Response('Hello World');
-    return await sendMultipleRequestsSlowly({ targetUrl: 'http://authgate.work', requestTimes: 200 });
+    return await sendMultipleRequests({ targetUrl: 'https://api.authgate.work/', requestTimes: 1000 });
   }
 }
