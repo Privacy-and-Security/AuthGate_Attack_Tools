@@ -29,12 +29,15 @@ async function sendMultipleRequestsSlowly({ targetUrl, requestTimes = 1 }) {
 
 async function sendMultipleRequests({ targetUrl, requestTimes = 1 }) {
   let promises = [];
+
   for (let i = 0; i < requestTimes; i++) {
-    let promise = fetch(targetUrl).then(response => {
-      if (response.status === 429) { // HTTP 429 Too Many Requests
-        throw new Error(`Rate limit hit after ${i} requests`);
+    let promise = (async function (index) {
+      const response = await fetch(targetUrl);
+      if (response.status === 429) {
+        throw new Error(`Rate limit hit after ${index + 1} requests`);
       }
-    });
+    })(i);
+
     promises.push(promise);
   }
 
