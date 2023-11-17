@@ -233,7 +233,6 @@ export class Fetcher {
 
 	async fetch(request) {
 		// 2022 top 200 most common passwords list (resource: https://s1.nordcdn.com/nord/misc/0.78.0/nordpass/top-200-2023/200-most-common-passwords-en.pdf)
-
 		// const passwords = customPasswords;
 		const passwords = ['ABCabc123.'];
 
