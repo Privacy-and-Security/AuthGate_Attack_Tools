@@ -9,23 +9,6 @@
  */
 
 
-// async function sendMultipleRequestsSlowly({ targetUrl, requestTimes = 1 }) {
-//   let url = new URL(targetUrl);
-
-//   try {
-//     for (let i = 0; i < requestTimes; i++) {
-//       let response = await fetch(url);
-//       if (response.status === 429) { // HTTP 429 Too Many Requests
-//         return new Response(`Rate limit hit after ${i} requests`, { status: 200 });
-//       }
-//     }
-//     return new Response(`No rate limit hit after ${requestTimes} requests`, { status: 200 });
-
-//   } catch (error) {
-//     return new Response(error.message, { status: 200 });
-//   }
-// }
-
 
 async function sendMultipleRequests({ targetUrl, requestTimes = 1 }) {
   let promises = [];
@@ -57,8 +40,6 @@ export class Fetcher {
   }
 
   async fetch(request) {
-    // return new Response('Hello World');
-
     const weak = await sendMultipleRequests({ targetUrl: 'https://apiweak.authgate.work/hello', requestTimes: 100 });
     const fixed = await sendMultipleRequests({ targetUrl: 'https://api.authgate.work/', requestTimes: 100 });
 
@@ -76,16 +57,9 @@ export default {
     // Get the instance of the Durable Object.
     const obj = env.ddos2.get(id);
 
-    // Use the Durable Object.
-
-    // const responseWeak = await obj.fetch('https://apiweak.authgate.work/hello');
-
-    // const response = await obj.fetch('https://api.authgate.work/');
-
     const response = await obj.fetch(request);
 
     return response;
-    // return new Response(`Weak version: ${await response.weak},\nFixed version: ${await response.fixed}`, { status: 200 });
   },
 };
 
