@@ -22,4 +22,8 @@ This extension is a critical part of our security analysis, underscoring the imp
 
 * After installation, API Monitor will automatically start monitoring any POST requests to https://apiweak.authgate.work/pay made by pages in Chrome.
 * Now you can navigate to https://feweak.authgate.work and make a payment.
-* After successfully making a payment, API Monitor will automatically display the payment information, as shown below:
+* After successfully making a payment, the API Monitor will automatically catch the payment information. Click `request body` on the console window to expand the whole list of body contents, and then click on the small icon next to the text `ArrayBuffer` to see the payment information.
+
+    <img width="550" alt="Screenshot1" src="https://github.com/Privacy-and-Security/AuthGate_Attack_Tools/assets/82356933/c397ff34-ee54-4973-8436-e2c51b7246d1">
+    
+    <img width="550" alt="Screenshot2" src="https://github.com/Privacy-and-Security/AuthGate_Attack_Tools/assets/82356933/1199465b-98f4-4816-abcc-d5fbe95695c7">
