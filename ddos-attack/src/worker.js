@@ -59,8 +59,8 @@ export class Fetcher {
   async fetch(request) {
     // return new Response('Hello World');
 
-    const weak = await sendMultipleRequests({ targetUrl: 'https://apiweak.authgate.work/hello', requestTimes: 1000 });
-    const fixed = await sendMultipleRequests({ targetUrl: 'https://api.authgate.work/', requestTimes: 1000 });
+    const weak = await sendMultipleRequests({ targetUrl: 'https://apiweak.authgate.work/hello', requestTimes: 100 });
+    const fixed = await sendMultipleRequests({ targetUrl: 'https://api.authgate.work/', requestTimes: 100 });
 
     return new Response(`Weak version: ${weak},\nFixed version: ${fixed}`, { status: 200 });
 
@@ -71,10 +71,10 @@ export class Fetcher {
 export default {
   async fetch(request, env, ctx) {
     // Get the ID of the Durable Object.
-    const id = env.ddos.idFromName('Fetcher');
+    const id = env.ddos2.idFromName('Fetcher');
 
     // Get the instance of the Durable Object.
-    const obj = env.ddos.get(id);
+    const obj = env.ddos2.get(id);
 
     // Use the Durable Object.
 
