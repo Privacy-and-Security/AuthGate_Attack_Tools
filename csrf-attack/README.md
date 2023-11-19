@@ -19,4 +19,4 @@ npm run dev
 
 ### Testing Procedure
 
-- After starting the script, the attacker will automatically send requests to https://api.authgate.work/pay.
+- After starting the script, the attacker will automatically send requests to https://api.authgate.work/.
