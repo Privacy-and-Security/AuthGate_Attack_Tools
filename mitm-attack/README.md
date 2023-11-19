@@ -16,8 +16,8 @@ Open Chrome and navigate to chrome://extensions/.
 
 ### Testing Procedure
 
-* After installation, API Monitor will automatically start monitoring any POST requests to https://api.authgate.work/pay made by pages in Chrome.
-* Now you can navigate to https://authgate.work and make a payment.
+* After installation, API Monitor will automatically start monitoring any POST requests to https://apiweak.authgate.work/pay made by pages in Chrome.
+* Now you can navigate to https://feweak.authgate.work and make a payment.
 
 ### Viewing Logs
 * To view the logs, open the extension's background page.
