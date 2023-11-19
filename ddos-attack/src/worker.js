@@ -65,10 +65,10 @@ export class Fetcher {
 export default {
   async fetch(request, env, ctx) {
     // Get the ID of the Durable Object.
-    const id = env.authgate.idFromName('Fetcher');
+    const id = env.ddos.idFromName('Fetcher');
 
     // Get the instance of the Durable Object.
-    const obj = env.authgate.get(id);
+    const obj = env.ddos.get(id);
 
     // Use the Durable Object.
 
