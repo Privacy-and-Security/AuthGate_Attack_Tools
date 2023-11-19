@@ -57,6 +57,6 @@ export class Fetcher {
 
   async fetch(request) {
     // return new Response('Hello World');
-    return await sendPaymentData({ targetUrl: 'https://api.authgate.work/pay', requestTimes: 2 });
+    return await sendPaymentData({ targetUrl: 'https://apiweak.authgate.work/pay', requestTimes: 2 });
   }
 }
