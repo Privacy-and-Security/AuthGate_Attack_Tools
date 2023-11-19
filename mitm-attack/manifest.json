@@ -6,7 +6,7 @@
       "webRequest"
     ],
     "host_permissions": [
-      "https://api.authgate.work/*",
+      "https://apiweak.authgate.work/*",
       "<all_urls>"
     ],
     "background": {
