@@ -9,27 +9,27 @@
  */
 
 
-async function sendMultipleRequestsSlowly({ targetUrl, requestTimes = 1 }) {
-  let url = new URL(targetUrl);
+// async function sendMultipleRequestsSlowly({ targetUrl, requestTimes = 1 }) {
+//   let url = new URL(targetUrl);
 
-  try {
-    for (let i = 0; i < requestTimes; i++) {
-      let response = await fetch(url);
-      if (response.status === 429) { // HTTP 429 Too Many Requests
-        return new Response(`Rate limit hit after ${i} requests`, { status: 200 });
-      }
-    }
-    return new Response(`No rate limit hit after ${requestTimes} requests`, { status: 200 });
+//   try {
+//     for (let i = 0; i < requestTimes; i++) {
+//       let response = await fetch(url);
+//       if (response.status === 429) { // HTTP 429 Too Many Requests
+//         return new Response(`Rate limit hit after ${i} requests`, { status: 200 });
+//       }
+//     }
+//     return new Response(`No rate limit hit after ${requestTimes} requests`, { status: 200 });
 
-  } catch (error) {
-    return new Response(error.message, { status: 200 });
-  }
-}
+//   } catch (error) {
+//     return new Response(error.message, { status: 200 });
+//   }
+// }
 
 
 async function sendMultipleRequests({ targetUrl, requestTimes = 1 }) {
   let promises = [];
-  const url = targetUrl.url;
+  const url = targetUrl;
 
   for (let i = 0; i < requestTimes; i++) {
     let promise = (async function (index) {
@@ -44,9 +44,9 @@ async function sendMultipleRequests({ targetUrl, requestTimes = 1 }) {
 
   try {
     await Promise.all(promises);
-    return new Response(`No rate limit hit after ${requestTimes} requests`, { status: 200 });
+    return `No rate limit hit after ${requestTimes} requests`;
   } catch (error) {
-    return new Response(`Got error: ${error.message}`, { status: 200 });
+    return `Got error: ${error.message}`;
 
   }
 }
@@ -56,11 +56,17 @@ export class Fetcher {
     this.state = state;
   }
 
-  async fetch(targetUrl, displayUrl) {
+  async fetch(request) {
     // return new Response('Hello World');
-    return await sendMultipleRequests({ targetUrl, requestTimes: 1000 });
-  }
+
+    const weak = await sendMultipleRequests({ targetUrl: 'https://apiweak.authgate.work/hello', requestTimes: 1000 });
+    const fixed = await sendMultipleRequests({ targetUrl: 'https://api.authgate.work/', requestTimes: 1000 });
+
+    return new Response(`Weak version: ${weak},\nFixed version: ${fixed}`, { status: 200 });
+
+  };
 }
+
 
 export default {
   async fetch(request, env, ctx) {
@@ -72,11 +78,14 @@ export default {
 
     // Use the Durable Object.
 
-    const responseWeak = await obj.fetch('https://apiweak.authgate.work/hello');
+    // const responseWeak = await obj.fetch('https://apiweak.authgate.work/hello');
 
-    const response = await obj.fetch('https://api.authgate.work/');
+    // const response = await obj.fetch('https://api.authgate.work/');
 
-    return new Response(`Weak version: ${await responseWeak?.text()},\nFixed version: ${await response?.text()}`, { status: 200 });
+    const response = await obj.fetch(request);
+
+    return response;
+    // return new Response(`Weak version: ${await response.weak},\nFixed version: ${await response.fixed}`, { status: 200 });
   },
 };
 
