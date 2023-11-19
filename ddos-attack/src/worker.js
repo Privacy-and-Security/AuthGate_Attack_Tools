@@ -29,10 +29,11 @@ async function sendMultipleRequestsSlowly({ targetUrl, requestTimes = 1 }) {
 
 async function sendMultipleRequests({ targetUrl, requestTimes = 1 }) {
   let promises = [];
+  const url = targetUrl.url;
 
   for (let i = 0; i < requestTimes; i++) {
     let promise = (async function (index) {
-      const response = await fetch(targetUrl);
+      const response = await fetch(url);
       if (response.status === 429) {
         throw new Error(`Rate limit hit after ${index + 1} requests`);
       }
@@ -45,7 +46,19 @@ async function sendMultipleRequests({ targetUrl, requestTimes = 1 }) {
     await Promise.all(promises);
     return new Response(`No rate limit hit after ${requestTimes} requests`, { status: 200 });
   } catch (error) {
-    return new Response(error.message, { status: 200 });
+    return new Response(`Got error: ${error.message}`, { status: 200 });
+
+  }
+}
+
+export class Fetcher {
+  constructor(state, env) {
+    this.state = state;
+  }
+
+  async fetch(targetUrl, displayUrl) {
+    // return new Response('Hello World');
+    return await sendMultipleRequests({ targetUrl, requestTimes: 1000 });
   }
 }
 
@@ -58,20 +71,12 @@ export default {
     const obj = env.authgate.get(id);
 
     // Use the Durable Object.
-    const response = await obj.fetch(request);
 
-    return response;
+    const responseWeak = await obj.fetch('https://apiweak.authgate.work/hello');
+
+    const response = await obj.fetch('https://api.authgate.work/');
+
+    return new Response(`Weak version: ${await responseWeak?.text()},\nFixed version: ${await response?.text()}`, { status: 200 });
   },
 };
 
-
-export class Fetcher {
-  constructor(state, env) {
-    this.state = state;
-  }
-
-  async fetch(request) {
-    // return new Response('Hello World');
-    return await sendMultipleRequests({ targetUrl: 'https://api.authgate.work/', requestTimes: 1000 });
-  }
-}
