@@ -9,19 +9,17 @@ This extension is a critical part of our security analysis, underscoring the imp
 
 ### Installation
 * Download the latest version of API Monitor from this repo.
-* Load the Extension in Chrome:
-Open Chrome and navigate to chrome://extensions/.
+* Open Chrome and navigate to chrome://extensions/.
 * Enable “Developer Mode” at the top right corner.
 * Click on “Load unpacked” and select the directory where the extension files are located.
+
+### Viewing Logs
+* Find API Monitor in your list of extensions.
+* Click on the “Background Page” link (might be named “Service Worker” depending on your extension setup).
+* In the opened Developer Tools window, switch to the “Console” tab to see the logs.
 
 ### Testing Procedure
 
 * After installation, API Monitor will automatically start monitoring any POST requests to https://apiweak.authgate.work/pay made by pages in Chrome.
 * Now you can navigate to https://feweak.authgate.work and make a payment.
-
-### Viewing Logs
-* To view the logs, open the extension's background page.
-* Go to chrome://extensions/.
-* Find API Monitor in your list of extensions.
-* Click on the “Background Page” link (might be named “Service Worker” depending on your extension setup).
-* In the opened Developer Tools window, switch to the “Console” tab to see the logs.
+* After successfully making a payment, API Monitor will automatically display the payment information, as shown below:
