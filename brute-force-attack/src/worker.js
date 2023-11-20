@@ -214,10 +214,10 @@ const customPasswords = [
 export default {
 	async fetch(request, env, ctx) {
 		// Get the ID of the Durable Object.
-		const id = env.authgate.idFromName('Fetcher');
+		const id = env.authgate_login_worker.idFromName('Fetcher');
 
 		// Get the instance of the Durable Object.
-		const obj = env.authgate.get(id);
+		const obj = env.authgate_login_worker.get(id);
 
 		// Use the Durable Object.
 		const response = await obj.fetch(request);

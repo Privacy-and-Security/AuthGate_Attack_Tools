@@ -1,4 +1,4 @@
-name = "worker-weathered-dew-2370"
+name = "ddos2"
 main = "src/worker.js"
 compatibility_date = "2023-11-07"
 env = { }
@@ -12,5 +12,5 @@ tag = "v1"
 new_classes = ["Fetcher"]
 
 [[durable_objects.bindings]]
-name = "authgate"
+name = "ddos2"
 class_name = "Fetcher"

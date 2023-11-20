@@ -37,10 +37,10 @@ async function sendPaymentData({ targetUrl, requestTimes = 1 }) {
 export default {
   async fetch(request, env, ctx) {
     // Get the ID of the Durable Object.
-    const id = env.authgate.idFromName('Fetcher');
+    const id = env.worker_payment_request.idFromName('Fetcher');
 
     // Get the instance of the Durable Object.
-    const obj = env.authgate.get(id);
+    const obj = env.worker_payment_request.get(id);
 
     // Use the Durable Object.
     const response = await obj.fetch(request);

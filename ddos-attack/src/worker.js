@@ -9,60 +9,42 @@
  */
 
 
-async function sendMultipleRequestsSlowly({ targetUrl, requestTimes = 1 }) {
-  let url = new URL(targetUrl);
 
-  try {
-    for (let i = 0; i < requestTimes; i++) {
-      let response = await fetch(url);
-      if (response.status === 429) { // HTTP 429 Too Many Requests
-        return new Response(`Rate limit hit after ${i} requests`, { status: 200 });
-      }
-    }
-    return new Response(`No rate limit hit after ${requestTimes} requests`, { status: 200 });
-
-  } catch (error) {
-    return new Response(error.message, { status: 200 });
-  }
-}
-
-
-async function sendMultipleRequests({ targetUrl, requestTimes = 1 }) {
-  let promises = [];
+async function sendMultipleRequests({ targetUrl, requestTimes = 1, batchSize = 10 }) {
+  let successfulRequests = 0;
+  let allPromises = [];
 
   for (let i = 0; i < requestTimes; i++) {
-    let promise = (async function (index) {
-      const response = await fetch(targetUrl);
-      if (response.status === 429) {
-        throw new Error(`Rate limit hit after ${index + 1} requests`);
+    // Create a promise for the fetch request.
+    let promise = fetch(targetUrl)
+      .then(response => {
+        if (response.status === 429) {
+          throw new Error(`Rate limit hit after ${successfulRequests} requests`);
+        }
+        if (response.ok) {
+          successfulRequests++;
+        }
+        return response;
+      })
+      .catch(error => {
+        return `Request failed after ${successfulRequests} successful requests. Error: ${error.message}`;
+      });
+
+    allPromises.push(promise);
+
+    if ((i + 1) % batchSize === 0 || i === requestTimes - 1) {
+      try {
+        // Wait for the current batch to complete.
+        await Promise.all(allPromises);
+      } catch (error) {
+        return `Hit rate limit after ${successfulRequests} successful requests. Failed to send ${requestTimes - successfulRequests} requests`;
       }
-    })(i);
-
-    promises.push(promise);
+      allPromises = [];
+    }
   }
 
-  try {
-    await Promise.all(promises);
-    return new Response(`No rate limit hit after ${requestTimes} requests`, { status: 200 });
-  } catch (error) {
-    return new Response(error.message, { status: 200 });
-  }
+  return `Finished sending requests with ${successfulRequests} successful requests. Failed to send ${requestTimes - successfulRequests} requests`;
 }
-
-export default {
-  async fetch(request, env, ctx) {
-    // Get the ID of the Durable Object.
-    const id = env.authgate.idFromName('Fetcher');
-
-    // Get the instance of the Durable Object.
-    const obj = env.authgate.get(id);
-
-    // Use the Durable Object.
-    const response = await obj.fetch(request);
-
-    return response;
-  },
-};
 
 
 export class Fetcher {
@@ -71,7 +53,27 @@ export class Fetcher {
   }
 
   async fetch(request) {
-    // return new Response('Hello World');
-    return await sendMultipleRequests({ targetUrl: 'https://api.authgate.work/', requestTimes: 1000 });
-  }
+    const weak = await sendMultipleRequests({ targetUrl: 'https://apiweak.authgate.work/hello', requestTimes: 300 });
+    const fixed = await sendMultipleRequests({ targetUrl: 'https://api.authgate.work/', requestTimes: 300 });
+    // return new Response(`Fixed version: ${fixed}`, { status: 200 });
+
+    return new Response(`Weak version: ${weak}\nFixed version: ${fixed}`, { status: 200 });
+
+  };
 }
+
+
+export default {
+  async fetch(request, env, ctx) {
+    // Get the ID of the Durable Object.
+    const id = env.ddos2.idFromName('Fetcher');
+
+    // Get the instance of the Durable Object.
+    const obj = env.ddos2.get(id);
+
+    const response = await obj.fetch(request);
+
+    return response;
+  },
+};
+
